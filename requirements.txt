@@ -1,0 +1,8 @@
+alembic
+aiogram
+uvicorn
+pydantic
+pydantic[email]
+httpx
+python-dotenv
+psycopg2-binary
