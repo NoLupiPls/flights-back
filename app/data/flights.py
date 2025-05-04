@@ -2,7 +2,7 @@ import datetime
 import sqlalchemy
 from sqlalchemy import orm
 
-from .db_session import SqlAlchemyBase
+from app.data.db_session import SqlAlchemyBase
 
 categories = orm.relationship("Category",
                               secondary="association",
@@ -31,18 +31,21 @@ class Flight(SqlAlchemyBase):
 
     ap_to = sqlalchemy.Column(sqlalchemy.String, nullable=True) # аэропорт (прилёт)
 
-    passengers = sqlalchemy.Column(sqlalchemy.Integer) # кол-во пассажиров
+    passengers = sqlalchemy.Column(sqlalchemy.Integer, nullable=True) # кол-во пассажиров
 
     pilot = sqlalchemy.Column(sqlalchemy.String, nullable=True) # Пилот (Иванов И. И.)
 
     plane = sqlalchemy.Column(sqlalchemy.String, nullable=True) # имя самолёта
 
     terminal = sqlalchemy.Column(sqlalchemy.String, nullable=True) # Название терминала вылета
+
     gate = sqlalchemy.Column(sqlalchemy.Integer) # номер выхода
+
     dt_register = sqlalchemy.Column(sqlalchemy.DateTime) # дата и время начала регистрации
+
     dt_boarding = sqlalchemy.Column(sqlalchemy.DateTime) # дата и время начала посадки
 
     user_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                sqlalchemy.ForeignKey("users.id"))
+                                sqlalchemy.ForeignKey("users.uuid"))
 
     user = orm.relationship('User')

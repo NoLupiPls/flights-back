@@ -1,8 +1,5 @@
-import datetime
-
-import login
 import sqlalchemy
-from .db_session import SqlAlchemyBase
+from app.data.db_session import SqlAlchemyBase
 from sqlalchemy import orm
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -15,8 +12,8 @@ class User(SqlAlchemyBase, UserMixin):
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     premium = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
-    friends = sqlalchemy.Column(sqlalchemy.ARRAY, nullable=True)
-    my_flights = orm.relationship("flights", back_populates='user')
+    friends = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    my_flights = orm.relationship("Flight", back_populates='user')
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
