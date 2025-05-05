@@ -1,3 +1,5 @@
+import flask_login
+
 from app import create_app
 
 

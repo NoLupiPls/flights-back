@@ -1,25 +1,36 @@
-from flask import Flask, request, jsonify
+from flask import request, jsonify, Blueprint
 from app.data.flights import Flight
 from app.data import db_session
-from app.data.users import User
 import uuid
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
 
-app = Flask(__name__)
-login_manager = LoginManager()
-login_manager.init_app(app)
-db_session.global_init('../db/flights_db.db')
-
-@login_manager.user_loader
-def load_user(user_id):
-    db_sess = db_session.create_session()
-    return db_sess.query(User).get(user_id)
+flight_api = Blueprint('flight_api', __name__)
 
 
 @login_required
-@app.route('/post', methods=['POST'])
+@flight_api.route('/add_flight', methods=['POST'])
 def create_flight():
-    data = request.get_json()
+    def fill_missing_fields(data: dict) -> dict:
+        required_fields = [
+            'name', 'company', 'dt_from', 'dt_to', 'duration', 'distance',
+            'ap_from', 'ap_to', 'passengers', 'pilot',
+            'plane', 'terminal', 'gate', 'dt_register', 'dt_boarding', 'user_id'
+        ]
+
+        # Создаем копию исходного словаря, чтобы не изменять оригинал
+        result = data.copy()
+
+        # Добавляем отсутствующие поля со значением None
+        for field in required_fields:
+            if field not in result:
+                result[field] = None
+
+        return result
+
+    db_session.global_init('db/flights_db.db')
+    req_data = request.get_json()
+
+    data = fill_missing_fields(req_data)
 
     new_flight = Flight(
         uuid=str(uuid.uuid4()),
@@ -48,10 +59,9 @@ def create_flight():
     return jsonify(new_flight.to_dict()), 201
 
 
-@app.route('/get_flights', methods=['GET'])
+@flight_api.route('/get_flights', methods=['GET'])
 def get_flights():
+    db_session.global_init('db/flights_db.db')
     db_sess = db_session.create_session()
-    flights = db_sess.query(Flight).all()
-    return jsonify([flight.to_dict() for flight in flights]), 200
-
-app.run()
+    flights_db_req = db_sess.query(Flight).all()
+    return jsonify([flight.to_dict() for flight in flights_db_req]), 200
