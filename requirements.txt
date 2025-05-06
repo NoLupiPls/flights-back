@@ -2,7 +2,9 @@ alembic
 aiogram
 pydantic
 pydantic[email]
+pyopenssl
 httpx
 python-dotenv
 psycopg2-binary
+flask-wtf
 flask

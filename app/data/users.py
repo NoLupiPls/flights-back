@@ -10,10 +10,13 @@ class User(SqlAlchemyBase, UserMixin):
 
     uuid = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     premium = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
     friends = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     my_flights = orm.relationship("Flight", back_populates='user')
+    email = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    verification_code = sqlalchemy.Column(sqlalchemy.String(4), nullable=True)
+    verification_code_expires = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
