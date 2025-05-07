@@ -11,6 +11,7 @@ class User(SqlAlchemyBase, UserMixin):
     uuid = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    verified = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False)
     premium = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
     friends = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     my_flights = orm.relationship("Flight", back_populates='user')

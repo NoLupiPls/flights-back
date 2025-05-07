@@ -28,8 +28,8 @@ def register():
         for field in required_fields:
             if field not in result:
                 result[field] = None
-
         return result
+
 
     req_data = request.get_json()
 
@@ -37,12 +37,14 @@ def register():
 
     # Создание пользователя
     user = User()
-
-    user.uuid = str(uuid.uuid4()),
-    user.name = data['name'],
-    user.premium = data['premium'],
-    user.friends = data['friends'],
-    user.my_flights = data['my_flights'],
+    user.uuid = str(uuid.uuid4())
+    user.name = data['name']
+    user.premium = data['premium']
+    user.friends = data['friends']
+    if not data["my_flights"]:
+        user.my_flights = []
+    else:
+        user.my_flights = data['my_flights']
     user.email = None,
     user.verification_code = None,
     user.verification_code_expires = None

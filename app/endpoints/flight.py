@@ -11,6 +11,8 @@ flight_api = Blueprint('flight_api', __name__)
 @login_required
 @flight_api.route('/add_flight', methods=['POST'])
 def create_flight():
+    if not current_user.verified:
+        return 'Account is not verified', 401
     """
 
     Должен принимать данные в форме .json файла
