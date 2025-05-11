@@ -1,14 +1,36 @@
-from flask import request, Blueprint
+from flask import request, Blueprint, jsonify
 from app.data import db_session
 import uuid
 import os
 from flask_login import login_required, current_user
+from app.data.users import User
 
 profile_api = Blueprint('profile_api', __name__)
 
 
+@profile_api.route('/api/profile', methods=['GET'])
 @login_required
+def get_profile():
+    """
+    Возвращает основные данные профиля текущего пользователя.
+    """
+    # Обновляем данные о пользователе из базы данных
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.uuid == current_user.uuid).first()
+    
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+        
+    # Возвращаем только нужные поля
+    return jsonify({
+        'uuid': user.uuid,
+        'name': user.name,
+        'premium': user.premium or False  # Если premium равен None, вернем False
+    }), 200
+
+
 @profile_api.route('/upload_avatar', methods=['POST'])
+@login_required
 def upload_avatar():
     def allowed_file(filename):
         ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}

@@ -8,3 +8,10 @@ python-dotenv
 psycopg2-binary
 flask-wtf
 flask
+flask-login
+sqlalchemy
+sqlalchemy-utils
+sqlalchemy-mixins
+werkzeug
+flask-mail
+flask-cors
