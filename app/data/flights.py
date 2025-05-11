@@ -6,7 +6,7 @@ from app.data.db_session import SqlAlchemyBase
 
 categories = orm.relationship("Category",
                               secondary="association",
-                              backref="news")
+                              backref="flights")
 
 
 class Flight(SqlAlchemyBase):

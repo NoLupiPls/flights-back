@@ -1,8 +1,9 @@
-from flask import request, jsonify, Blueprint
+from flask import Blueprint, request, jsonify
 from app.data.flights import Flight
 from app.data import db_session
 import uuid
-from flask_login import login_user, LoginManager, login_required, logout_user, current_user
+from flask_login import login_required, current_user
+
 
 flight_api = Blueprint('flight_api', __name__)
 
@@ -10,6 +11,13 @@ flight_api = Blueprint('flight_api', __name__)
 @login_required
 @flight_api.route('/add_flight', methods=['POST'])
 def create_flight():
+    if not current_user.verified:
+        return 'Account is not verified', 401
+    """
+
+    Должен принимать данные в форме .json файла
+
+    """
     def fill_missing_fields(data: dict) -> dict:
         required_fields = [
             'name', 'company', 'dt_from', 'dt_to', 'duration', 'distance',
@@ -63,5 +71,5 @@ def create_flight():
 def get_flights():
     db_session.global_init('db/flights_db.db')
     db_sess = db_session.create_session()
-    flights_db_req = db_sess.query(Flight).all()
-    return jsonify([flight.to_dict() for flight in flights_db_req]), 200
+    flights = db_sess.query(Flight).all()
+    return jsonify([flight.to_dict() for flight in flights]), 200

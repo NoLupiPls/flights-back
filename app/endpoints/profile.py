@@ -4,17 +4,19 @@ import uuid
 import os
 from flask_login import login_required, current_user
 
-
 profile_api = Blueprint('profile_api', __name__)
 
-def allowed_file(filename):
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @login_required
 @profile_api.route('/upload_avatar', methods=['POST'])
 def upload_avatar():
+    def allowed_file(filename):
+        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+        return '.' in filename and \
+            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+    if not current_user.verified:
+        return 'Account is not verified', 401
     pfp_directory = 'static/uploads/user_pfp/'
     if 'avatar' not in request.files:
         return 'No file part', 400
