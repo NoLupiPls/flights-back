@@ -100,4 +100,4 @@ def logout():
             'message': 'Successfully logged out'
         })
     
-    return redirect(url_for('index'))
+    return {"success": True, "message": "Successfully logged out"}, 200

@@ -14,6 +14,13 @@ def get_profile():
     """
     Возвращает основные данные профиля текущего пользователя.
     """
+    # Инициализируем соединение с БД
+    base_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    db_dir = os.path.join(base_dir, 'db')
+    os.makedirs(db_dir, exist_ok=True)  # Создаем директорию, если она не существует
+    db_path = os.path.join(db_dir, 'flights_db.db')
+    db_session.global_init(db_path)
+    
     # Обновляем данные о пользователе из базы данных
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.uuid == current_user.uuid).first()
