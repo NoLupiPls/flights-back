@@ -1,6 +1,7 @@
 from flask import request, Blueprint, jsonify
 from app.data import db_session
 import uuid
+import base64
 import os
 from flask_login import login_required, current_user
 from app.data.users import User
@@ -27,12 +28,19 @@ def get_profile():
     
     if not user:
         return jsonify({'error': 'User not found'}), 404
-        
+
+    image = user.pfp_route
+
+    with open(image, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read())
+        file = encoded_string
+
     # Возвращаем только нужные поля
     return jsonify({
         'uuid': user.uuid,
         'name': user.name,
-        'premium': user.premium or False  # Если premium равен None, вернем False
+        'premium': user.premium or False,  # Если premium равен None, вернем False
+        'pfp': file # На сайте это нужно будет декодировать
     }), 200
 
 

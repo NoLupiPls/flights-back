@@ -22,6 +22,11 @@ def create_app(config=None):
     }})
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_key_for_testing_only')
+    app.config['UPLOAD_FOLDER'] = 'static/uploads/user_pfp'
+    app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+    app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2MB limit
+
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     # Инициализация Flask-Login
     login_manager = LoginManager()
@@ -48,7 +53,9 @@ def create_app(config=None):
     from app.endpoints.flight import flight_api
     from app.endpoints.account_verification import verify_api
     from app.endpoints.profile import profile_api  # Добавлен импорт для API профиля
+    from app.endpoints.set_pfp import set_pfp
 
+    app.register_blueprint(set_pfp)
     app.register_blueprint(ping_bp)
     app.register_blueprint(login_bp)
     app.register_blueprint(register_bp)

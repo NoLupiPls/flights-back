@@ -19,12 +19,13 @@ class User(SqlAlchemyBase, UserMixin):
     verification_code = sqlalchemy.Column(sqlalchemy.String(4), nullable=True)
     verification_code_expires = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    pfp_route = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     # Добавьте этот метод
     def get_id(self):
         """Переопределение метода для Flask-Login, чтобы использовать uuid вместо id"""
         return str(self.uuid)
-    
+
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 
